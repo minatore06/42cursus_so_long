@@ -15,7 +15,8 @@ int	key_press_down(int keycode, t_mlxs *vars)
 		if (vars->mc.x < 0)
 			vars->mc.x = 1920;
 		vars->mc.x %= 1920;
-		ft_printf("left");
+		vars->movements++;
+		ft_printf("Movements: %d\n", vars->movements);
 	}
 	if (keycode == 65362)
 	{
@@ -23,7 +24,8 @@ int	key_press_down(int keycode, t_mlxs *vars)
 		if (vars->mc.y < 0)
 			vars->mc.y = 1080;
 		vars->mc.y %= 1080;
-		ft_printf("up");
+		vars->movements++;
+		ft_printf("Movements: %d\n", vars->movements);
 	}
 	if (keycode == 65363)
 	{
@@ -31,7 +33,8 @@ int	key_press_down(int keycode, t_mlxs *vars)
 		if (vars->mc.x > 1920 - vars->mc.width[0])
 			vars->mc.x = 1920 - vars->mc.width[0];
 		vars->mc.x %= 1920;
-		ft_printf("right");
+		vars->movements++;
+		ft_printf("Movements: %d\n", vars->movements);
 	}
 	if (keycode == 65364)
 	{
@@ -39,7 +42,8 @@ int	key_press_down(int keycode, t_mlxs *vars)
 		if (vars->mc.y > 1080 - vars->mc.height[0])
 			vars->mc.y = 1080 - vars->mc.height[0];
 		vars->mc.y %= 1080;
-		ft_printf("down");
+		vars->movements++;
+		ft_printf("Movements: %d\n", vars->movements);
 	}
 	ft_printf("Key pressed %d\n", keycode);
 	return (0);

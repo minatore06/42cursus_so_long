@@ -23,5 +23,5 @@ int	ft_strlcpy(char *dest, char const *src, unsigned int size)
 	}
 	if (size)
 		dest[len] = '\0';
-	return (ft_strlen((char *)src));
+	return (ft_strlen(src));
 }

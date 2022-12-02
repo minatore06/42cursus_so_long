@@ -18,7 +18,7 @@ int	ft_strlcat(char *dest, const char *src, unsigned int size)
 	int	result;
 
 	lend = ft_strlen(dest);
-	i = ft_strlen((char *)src);
+	i = ft_strlen(src);
 	result = lend + i;
 	if (size == 0 || size <= (unsigned int)lend)
 		return (size + i);

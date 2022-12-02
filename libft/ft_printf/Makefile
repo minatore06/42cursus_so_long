@@ -13,22 +13,22 @@ all: $(NAME)
 
 
 $(NAME): $(OBJECTS)
-#	$(MAKE) -C $(GETNEXTLINE)
-#	mv $(GETNEXTLINE)$(GETNEXTLINENAME) $(NAME)
+	$(MAKE) -C $(GETNEXTLINE)
+	mv $(GETNEXTLINE)$(GETNEXTLINENAME) $(NAME)
 	ar rcs $(NAME) $(OBJECTS)
 
 bonus: $(OBJECTS)
-#	$(MAKE) bonus -C $(GETNEXTLINE)
-#	mv $(GETNEXTLINE)$(GETNEXTLINENAME) $(NAME)
+	$(MAKE) bonus -C $(GETNEXTLINE)
+	mv $(GETNEXTLINE)$(GETNEXTLINENAME) $(NAME)
 	ar rcs $(NAME) $(OBJECTS)
 
 clean:
 	rm -f $(OBJECTS)
-#	$(MAKE) clean -C $(GETNEXTLINE)
+	$(MAKE) clean -C $(GETNEXTLINE)
 
 fclean: clean
 	rm -f $(NAME)
-#	rm -f $(GETNEXTLINE)$(GETNEXTLINENAME)
+	rm -f $(GETNEXTLINE)$(GETNEXTLINENAME)
 
 re:	fclean all
 

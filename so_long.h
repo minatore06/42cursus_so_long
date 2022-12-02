@@ -14,6 +14,7 @@
 # define SO_LONG_H
 # include <unistd.h>
 # include <stdlib.h>
+# include <fcntl.h>
 # include "mlx_linux/mlx.h"
 # include "libft/libft.h"
 
@@ -41,6 +42,9 @@ typedef struct	s_mlxs {
 	t_obj	mc;
 	t_obj	enemy;
 	int		frame;
+	int		movements;
+	int		width;
+	int		height;
 }				t_mlxs;
 
 int		create_trgb(int t, int r, int g, int b);
@@ -56,5 +60,6 @@ int		button_press_down(int mbcode, t_mlxs *vars);
 int		ft_close(t_mlxs *vars);
 void	ft_mlx_pixel_put(t_img *data, int x, int y, int color);
 int		render_next_frame(t_mlxs *vars);
+int		is_path_real(char **map);
 
 #endif

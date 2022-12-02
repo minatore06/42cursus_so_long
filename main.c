@@ -11,12 +11,139 @@
 /* ************************************************************************** */
 #include "so_long.h"
 
-int	main(void)
+char	**get_map(char *map_file, t_mlxs *vars)
+{
+	int		fd;
+	int		i;
+	char	*map_ln;
+	char	**map;
+
+	i = 0;
+	fd = open(map_file, O_RDONLY);
+	map_ln = NULL;
+	while (!i || map_ln)
+	{
+		if (map_ln)
+			free(map_ln);
+		map_ln = get_next_line(fd);
+		i++;
+	}
+	close(fd);
+	map = malloc(sizeof(char *) * i);
+	i = 0;
+	fd = open(map_file, O_RDONLY);
+	while (!i || map_ln)
+	{
+		map_ln = get_next_line(fd);
+		map[i] = map_ln;
+		i++;
+	}
+	vars->width = ft_strlen(map[0]);
+	vars->height = i;
+	return (map);
+}
+
+//controlla che la mappa sia un rettangolo, 0 rettangolo; 1 non rettangolo
+int	check_map_lenght(char **map)
+{
+	int	i;
+	int	j;
+	int	tmp;
+
+	i = 0;
+	while (map[i])
+	{
+		j = 0;
+		while (map[i][j])
+			j++;
+		if (!i)
+			tmp = j;
+		else if (j != tmp)
+			return (1);
+		i++;
+	}
+	return (0);
+}
+//err 1: no bordi; 2: char extra; 3/-3: no/too much E; 4/-4: no/too much P; 5: no collectibles; 6: no rettangolo
+int	map_check(char **map, char *set, t_mlxs *vars)
+{
+	int	i;
+	int	j;
+	int	exit;
+	int	start_pos;
+	int	collectibles;
+
+	exit = 0;
+	start_pos = 0;
+	collectibles = 0;
+	i = 0;
+	while (map[i])
+	{
+		if (ft_strchr(map[i], 'E') != ft_strrchr(map[i], 'E'))
+			return (-3);
+		else if (ft_strchr(map[i], 'E'))
+			exit++;
+		if (exit > 1)
+			return (-3);
+		if (ft_strchr(map[i], 'P') != ft_strrchr(map[i], 'P'))
+			return (-4);
+		else if (ft_strchr(map[i], 'P'))
+			start_pos++;
+		if (start_pos > 1)
+			return (-4);
+		if (ft_strchr(map[i], 'C'))
+			collectibles++;
+		j = 0;
+		while (map[i][j] && map[i][j] != '\n')
+		{
+			if ((i == 0 || j == 0 || i == vars->height || j == vars->width) && map[i][j] != '1')
+				return (1);
+			if (!ft_strchr(set, map[i][j]))
+				return (2);
+			
+			j++;
+		}
+		i++;
+	}
+	if (!exit)
+		return (3);
+	if (!start_pos)
+		return (4);
+	if (!collectibles)
+		return (5);
+	if (check_map_lenght(map))
+		return (6);
+	if (!is_path_real(map))
+		return (7);
+	return (0);
+}
+
+int	main(int argc, char *argv[])
 {
 	int		i;
+	int		err_code;
 	t_mlxs	mlx_vars;
 	char	*capybara_an[8];
 	char	*mc_walk[4];
+	char	**map;
+
+	if (argc != 2)
+		return (0);
+	map = get_map(argv[1], &mlx_vars);
+	err_code = map_check(map, "01CEP", &mlx_vars);
+	if (err_code)
+	{
+		ft_printf("Error\n%d", err_code);
+		return (0);
+	}
+
+	i = 0;
+	while (map[i])
+	{
+		ft_printf("%s\n", map[i]);
+		i++;
+	}
+	return (0);
 
 	capybara_an[0] = "./textures/capybara_idle_animation/idle1.xpm";
 	capybara_an[1] = "./textures/capybara_idle_animation/idle2.xpm";
@@ -31,6 +158,7 @@ int	main(void)
 	mc_walk[2] = "./textures/mc_walk_animation/walk3.xpm";
 	mc_walk[3] = "./textures/mc_walk_animation/walk4.xpm";
 	mlx_vars.frame = 0;
+	mlx_vars.movements = 0;
 	mlx_vars.mlx = mlx_init();
 	if (mlx_vars.mlx == NULL)
 		return (1);

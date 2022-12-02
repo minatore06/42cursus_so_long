@@ -17,7 +17,7 @@ int		ft_isascii(int ch);
 int		ft_isalpha(int ch);
 int		ft_isdigit(int ch);
 int		ft_isprint(int ch);
-int		ft_strlen(char *str);
+int		ft_strlen(const char *str);
 int		ft_strlcpy(char *dest, const char *src, unsigned int size);
 int		ft_strlcat(char *dest, const char *src, unsigned int size);
 int		ft_strncmp(const char *s1, const char *s2, unsigned int n);
@@ -47,6 +47,7 @@ void	ft_putstr_fd(char *s, int fd);
 void	ft_putendl_fd(char *s, int fd);
 void	ft_putnbr_fd(int n, int fd);
 int		ft_printf(const char *str, ...);
+char	*get_next_line(int fd);
 
 typedef struct s_list
 {

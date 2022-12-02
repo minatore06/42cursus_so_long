@@ -17,11 +17,10 @@
 #  define BUFFER_SIZE 1
 # endif
 
+# include "../libft.h"
+
 char	*get_next_line(int fd);
-int		ft_strlen(const char *str);
-int		ft_strlcpy(char *dest, char const *src, unsigned int size);
-int		ft_strlcat(char *dest, const char *src, unsigned int size);
-char	*ft_strdup(const char *s);
-char	*ft_strjoin(const char *s1, const char *s2);
+char	*ft_strdup2(const char *s);
+char	*ft_strjoin2(const char *s1, const char *s2);
 
 #endif

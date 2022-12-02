@@ -13,7 +13,7 @@
 #include <unistd.h>
 #include "get_next_line.h"
 
-static int	ft_strchr(const char *s, int c)
+static int	ft_strchr2(const char *s, int c)
 {
 	int	i;
 
@@ -33,22 +33,22 @@ static int	get_line_save_rest(char **safe, char **line, char **buffer)
 {
 	int	i;
 
-	i = ft_strchr(*buffer, '\n');
+	i = ft_strchr2(*buffer, '\n');
 	if (i == -1)
-		i = ft_strchr(*buffer, -1);
+		i = ft_strchr2(*buffer, -1);
 	if (i != -1)
 	{
 		if ((*buffer)[i + 1])
 		{
 			if (*safe)
 				free(*safe);
-			*safe = ft_strdup(&(*buffer)[i + 1]);
+			*safe = ft_strdup2(&(*buffer)[i + 1]);
 		}
-		(*buffer)[i + 1] = 0;
-		*line = ft_strjoin(*line, *buffer);
+		(*buffer)[i] = 0;
+		*line = ft_strjoin2(*line, *buffer);
 		return (1);
 	}
-	*line = ft_strjoin(*line, *buffer);
+	*line = ft_strjoin2(*line, *buffer);
 	return (0);
 }
 
@@ -109,13 +109,13 @@ char	*get_next_line(int fd)
 	{
 		if (*safe)
 		{
-			line = ft_strdup(safe);
-			i = ft_strchr(line, '\n');
+			line = ft_strdup2(safe);
+			i = ft_strchr2(line, '\n');
 			free(safe);
 			safe = 0;
 			if (i != -1)
 			{
-				safe = ft_strdup(&line[i + 1]);
+				safe = ft_strdup2(&line[i + 1]);
 				line[i + 1] = 0;
 				return (line);
 			}

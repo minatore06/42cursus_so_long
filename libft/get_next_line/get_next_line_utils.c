@@ -13,47 +13,7 @@
 #include <unistd.h>
 #include "get_next_line.h"
 
-int	ft_strlen(const char *str)
-{
-	int	len;
-
-	len = 0;
-	while (str[len])
-		len++;
-	return (len);
-}
-
-int	ft_strlcpy(char *dest, char const *src, unsigned int size)
-{
-	unsigned int	len;
-
-	len = 0;
-	while (len < size - 1 && size && src[len])
-	{
-		dest[len] = src[len];
-		len++;
-	}
-	if (size)
-		dest[len] = '\0';
-	return (ft_strlen(src));
-}
-
-int	ft_strlcat(char *dest, const char *src, unsigned int size)
-{
-	int	lend;
-	int	i;
-	int	result;
-
-	lend = ft_strlen(dest);
-	i = ft_strlen(src);
-	result = lend + i;
-	if (size == 0 || size <= (unsigned int)lend)
-		return (size + i);
-	ft_strlcpy(&dest[lend], src, size - lend);
-	return (result);
-}
-
-char	*ft_strdup(const char *s)
+char	*ft_strdup2(const char *s)
 {
 	char	*str;
 	int		i;
@@ -67,7 +27,7 @@ char	*ft_strdup(const char *s)
 	return (str);
 }
 
-char	*ft_strjoin(const char *s1, const char *s2)
+char	*ft_strjoin2(const char *s1, const char *s2)
 {
 	int		len;
 	char	*str;
