@@ -38,7 +38,10 @@ typedef struct	s_obj {
 typedef struct	s_mlxs {
 	void	*mlx;
 	void	*win;
-	t_img	img;
+	char	**map;
+	t_obj	terrain;
+	t_obj	border;
+	t_obj	wall;
 	t_obj	mc;
 	t_obj	enemy;
 	int		frame;
@@ -60,6 +63,7 @@ int		button_press_down(int mbcode, t_mlxs *vars);
 int		ft_close(t_mlxs *vars);
 void	ft_mlx_pixel_put(t_img *data, int x, int y, int color);
 int		render_next_frame(t_mlxs *vars);
+void	render_map(t_mlxs *vars);
 int		is_path_real(char **map);
 
 #endif

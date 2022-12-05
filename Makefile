@@ -1,5 +1,5 @@
 CC=gcc
-FLAGS=-Wall -Wextra -Werror
+FLAGS=-Wall -Wextra -Werror -g -O0
 NAME=solonglib.a
 OUT=game.out
 
