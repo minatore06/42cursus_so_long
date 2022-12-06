@@ -8,6 +8,8 @@ void	ft_mlx_pixel_put(t_img *data, int x, int y, int color)
 	*(unsigned int *)dst = color;
 }
 
+
+
 void	render_map(t_mlxs *vars)
 {
 	int	i;
@@ -19,13 +21,20 @@ void	render_map(t_mlxs *vars)
 		j = 0;
 		while (j < vars->width)
 		{
-			ft_printf("i: %d, j: %d, %c\n",i/64, j/64, vars->map[i / 64][j / 64]);
 			if (vars->map[i / 64][j / 64] == '1' && (i == 0 || j == 0 || i == vars->height - 64 || j == vars->width - 64))
 				mlx_put_image_to_window(vars->mlx, vars->win, vars->border.img[0].img, j, i);
 			else if (vars->map[i / 64][j / 64] == '1')
 				mlx_put_image_to_window(vars->mlx, vars->win, vars->wall.img[0].img, j, i);
+			else if (vars->map[i / 64][j / 64] == 'C')
+				mlx_put_image_to_window(vars->mlx, vars->win, vars->collectible.img[0].img, j, i);
+			else if (vars->map[i / 64][j / 64] == 'E')
+				mlx_put_image_to_window(vars->mlx, vars->win, vars->exit.img[0].img, j, i);
 			else
 				mlx_put_image_to_window(vars->mlx, vars->win, vars->terrain.img[0].img, j, i);
+			if (vars->map[i / 64][j / 64] == 'P' && !vars->mc.flip)
+				mlx_put_image_to_window(vars->mlx, vars->win, vars->mc.img[vars->frame / 20000 % 4].img, j + 16, i);
+			else if (vars->map[i / 64][j / 64] == 'P' && vars->mc.flip)
+				mlx_put_image_to_window(vars->mlx, vars->win, vars->mc.img[vars->frame / 20000 % 4 + 4].img, j + 16, i);
 			j += 64;
 		}
 		i += 64;
@@ -42,10 +51,16 @@ int	render_next_frame(t_mlxs *vars)
 	rainbow[3] = create_trgb(0, 0, 255, 0);
 	rainbow[4] = create_trgb(0, 0, 0, 255);
 	rainbow[5] = create_trgb(0, 128, 0, 128);
-	if (!(vars->frame % 60))
-		vars->enemy.x += 32;
+
+	if (!(vars->frame % 20000))
+	{
+		if (!vars->c_collectible)
+			vars->exit.img[0] = vars->exit.img[1];
+		mlx_clear_window(vars->mlx, vars->win);
+		render_map(vars);
+		mlx_put_image_to_window(vars->mlx, vars->win, vars->enemy.img[vars->frame / 8000 % 8].img, vars->enemy.x * 64 + 16, vars->enemy.y * 64);
+		vars->enemy.x += 64;
+	}
 	vars->frame++;
-	mlx_put_image_to_window(vars->mlx, vars->win, vars->mc.img[vars->frame / 60 % 4].img, vars->mc.x, vars->mc.y);
-	mlx_put_image_to_window(vars->mlx, vars->win, vars->enemy.img[vars->frame / 60 % 8].img, vars->enemy.x, vars->enemy.y);
-	return (0);
+return (0);
 }

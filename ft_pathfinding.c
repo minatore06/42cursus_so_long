@@ -118,6 +118,29 @@ void    free_map(char **map)
     free(map);
 }
 
+void    get_player(char **map, int *px, int *py)
+{
+    int i;
+    int j;
+
+    i = 0;
+	while (map[i])
+	{
+		j = 0;
+		while (map[i][j])
+		{
+			if (map[i][j] == 'P')
+			{
+                *px = j;
+                *py = i;
+                return ;
+            }
+            j++;
+		}
+		i++;
+	}
+}
+
 int	is_path_real(char **map)
 {
 	int	    px;
@@ -126,21 +149,9 @@ int	is_path_real(char **map)
     int     count;
     char    **map_cpy;
 
-	px = 0;
     map_cpy = dup_map(map);
-	while (map_cpy[px])
-	{
-		py = 0;
-		while (map_cpy[px][py])
-		{
-			if (map_cpy[px][py] == 'P')
-				break;
-			py++;
-		}
-		if (map_cpy[px][py] == 'P')
-			break;
-		px++;
-	}//settare a S celle cercate, settare a T celle da cercare, se E accanto a S fine, ogni 0 attorno a S diventa T
+    get_player(map_cpy, &px, &py);
+    //settare a S celle cercate, settare a T celle da cercare, se E accanto a S fine, ogni 0 attorno a S diventa T
     to_search = 1;
     count = count_collectibles(map_cpy);
     count++;

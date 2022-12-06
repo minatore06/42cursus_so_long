@@ -29,6 +29,7 @@ typedef struct	s_img {
 typedef struct	s_obj {
 	int		x;
 	int		y;
+	int		flip;
 	int		width[8];
 	int		height[8];
 	int		color[8];
@@ -42,8 +43,11 @@ typedef struct	s_mlxs {
 	t_obj	terrain;
 	t_obj	border;
 	t_obj	wall;
+	t_obj	collectible;
+	t_obj	exit;
 	t_obj	mc;
 	t_obj	enemy;
+	int		c_collectible;
 	int		frame;
 	int		movements;
 	int		width;
@@ -58,12 +62,14 @@ int		get_b(int trgb);
 int		add_shade(double distance, int color);
 int		add_tint(double distance, int color);
 int		get_opposite(int color);
-int		key_press_down(int keycode, t_mlxs *vars);
+int		key_press_up(int keycode, t_mlxs *vars);
 int		button_press_down(int mbcode, t_mlxs *vars);
 int		ft_close(t_mlxs *vars);
 void	ft_mlx_pixel_put(t_img *data, int x, int y, int color);
 int		render_next_frame(t_mlxs *vars);
 void	render_map(t_mlxs *vars);
+int 	count_collectibles(char **map);
+void    get_player(char **map, int *px, int *py);
 int		is_path_real(char **map);
 
 #endif

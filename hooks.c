@@ -1,6 +1,18 @@
 #include "so_long.h"
 
-int	key_press_down(int keycode, t_mlxs *vars)
+void	collect_collectible(t_mlxs *vars, int x, int y)
+{
+	vars->map[y][x] = '0';
+	vars->c_collectible--;
+}
+
+void	escape_game(t_mlxs *vars, int x, int y)
+{
+	if (!vars->c_collectible)
+		vars->map[y][x] = '0';
+}
+
+int	key_press_up(int keycode, t_mlxs *vars)
 {
 	if (keycode == 65307)
 	{
@@ -11,38 +23,64 @@ int	key_press_down(int keycode, t_mlxs *vars)
 	}
 	if (keycode == 65361)
 	{
-		vars->mc.x -= 32;
-		if (vars->mc.x < 0)
-			vars->mc.x = 1920;
-		vars->mc.x %= 1920;
-		vars->movements++;
+		if (vars->map[vars->mc.y][vars->mc.x - 1] == 'C')
+			collect_collectible(vars, vars->mc.x - 1, vars->mc.y);
+		else if (vars->map[vars->mc.y][vars->mc.x - 1] == 'E')
+			escape_game(vars, vars->mc.x, vars->mc.y);
+ 		else if (vars->map[vars->mc.y][vars->mc.x - 1] != '1')
+		{
+			vars->map[vars->mc.y][vars->mc.x] = '0';
+			vars->mc.x--;
+			vars->map[vars->mc.y][vars->mc.x] = 'P';
+			vars->movements++;
+			vars->mc.flip = 1;
+		}
 		ft_printf("Movements: %d\n", vars->movements);
 	}
 	if (keycode == 65362)
 	{
-		vars->mc.y -= 32;
-		if (vars->mc.y < 0)
-			vars->mc.y = 1080;
-		vars->mc.y %= 1080;
-		vars->movements++;
+		if (vars->map[vars->mc.y - 1][vars->mc.x] == 'C')
+			collect_collectible(vars, vars->mc.x, vars->mc.y - 1);
+		else if (vars->map[vars->mc.y - 1][vars->mc.x] == 'E')
+			escape_game(vars, vars->mc.x, vars->mc.y);
+		else if (vars->map[vars->mc.y - 1][vars->mc.x] != '1')
+		{	
+			vars->map[vars->mc.y][vars->mc.x] = '0';
+			vars->mc.y--;
+			vars->map[vars->mc.y][vars->mc.x] = 'P';
+			vars->movements++;
+		}
 		ft_printf("Movements: %d\n", vars->movements);
 	}
 	if (keycode == 65363)
 	{
-		vars->mc.x += 32;
-		if (vars->mc.x > 1920 - vars->mc.width[0])
-			vars->mc.x = 1920 - vars->mc.width[0];
-		vars->mc.x %= 1920;
-		vars->movements++;
+		if (vars->map[vars->mc.y][vars->mc.x + 1] == 'C')
+			collect_collectible(vars, vars->mc.x + 1, vars->mc.y);
+		else if (vars->map[vars->mc.y - 1][vars->mc.x] == 'E')
+			escape_game(vars, vars->mc.x, vars->mc.y);	
+		else if (vars->map[vars->mc.y][vars->mc.x + 1] != '1')
+		{
+			vars->map[vars->mc.y][vars->mc.x] = '0';
+			vars->mc.x++;
+			vars->map[vars->mc.y][vars->mc.x] = 'P';
+			vars->movements++;
+			vars->mc.flip = 0;
+		}
 		ft_printf("Movements: %d\n", vars->movements);
 	}
 	if (keycode == 65364)
 	{
-		vars->mc.y += 32;
-		if (vars->mc.y > 1080 - vars->mc.height[0])
-			vars->mc.y = 1080 - vars->mc.height[0];
-		vars->mc.y %= 1080;
-		vars->movements++;
+		if (vars->map[vars->mc.y + 1][vars->mc.x] == 'C')
+			collect_collectible(vars, vars->mc.x, vars->mc.y + 1);
+		else if (vars->map[vars->mc.y + 1][vars->mc.x] == 'E')
+			escape_game(vars, vars->mc.x, vars->mc.y);
+		else if (vars->map[vars->mc.y + 1][vars->mc.x] != '1')
+		{
+			vars->map[vars->mc.y][vars->mc.x] = '0';
+			vars->mc.y++;
+			vars->map[vars->mc.y][vars->mc.x] = 'P';
+			vars->movements++;
+		}
 		ft_printf("Movements: %d\n", vars->movements);
 	}
 	ft_printf("Key pressed %d\n", keycode);
