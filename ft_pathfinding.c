@@ -35,30 +35,30 @@ int count_collectibles(char **map)
 
 static int is_exit_here(char **map, int x, int y)
 {
-    if (map[x + 1][y] == 'E' || map[x + 1][y] == 'C')
+    if (map[y + 1][x] == 'E' || map[y + 1][x] == 'C')
     {
-        map[x + 1][y] = 'T';
+        map[y + 1][x] = 'T';
         return (1);
     }
-    if (map[x][y + 1] == 'E' || map[x][y + 1] == 'C')
+    if (map[y][x + 1] == 'E' || map[y][x + 1] == 'C')
     {
-        map[x][y + 1] = 'T';
+        map[y][x + 1] = 'T';
         return (1);
     }
-    if (map[x - 1][y] == 'E' || map[x - 1][y] == 'C')
+    if (map[y - 1][x] == 'E' || map[y - 1][x] == 'C')
     {
-        map[x - 1][y] = 'T';
+        map[y - 1][x] = 'T';
         return (1);
     }
-    if (map[x][y - 1] == 'E' || map[x][y - 1] == 'C')
+    if (map[y][x - 1] == 'E' || map[y][x - 1] == 'C')
     {
-        map[x][y - 1] = 'T';
+        map[y][x - 1] = 'T';
         return (1);
     }
     return (0);
 }
 
-static void    searching(char **map, int *px, int *py, int *to_search)
+static void searching(char **map, int *px, int *py, int *to_search)
 {
     int i;
     int j;
@@ -72,10 +72,40 @@ static void    searching(char **map, int *px, int *py, int *to_search)
             if (map[i][j] == 'T')
             {
                 map[i][j] = 'S';
-                *px = i;
-                *py = j;
+                *px = j;
+                *py = i;
                 *to_search = 1;
                 return ;
+            }
+            j++;
+        }
+        i++;
+    }
+}
+
+static void look_for_search(char **map, int *count)
+{
+    int i;
+    int j;
+
+    i = 0;
+    while (map[i])
+    {
+        j = 0;
+        while (map[i][j])
+        {
+            if (map[i][j] == 'S')
+            {        
+                if (is_exit_here(map, j, i))
+                    (*count)--;
+                if (map[i + 1][j] == '0')
+                    map[i + 1][j] = 'T';
+                if (map[i][j + 1] == '0')
+                    map[i][j + 1] = 'T';
+                if (map[i - 1][j] == '0')
+                    map[i - 1][j] = 'T';
+                if (map[i][j - 1] == '0')
+                    map[i][j - 1] = 'T';
             }
             j++;
         }
@@ -141,6 +171,19 @@ void    get_player(char **map, int *px, int *py)
 	}
 }
 
+void    print_map(char **map)
+{
+    int i;
+
+    i = 0;
+    while (map[i])
+    {
+        ft_printf("%s\n", map[i]);
+        i++;
+    }
+    ft_printf("\n");
+}
+
 int	is_path_real(char **map)
 {
 	int	    px;
@@ -159,19 +202,19 @@ int	is_path_real(char **map)
 	{
         to_search = 0;
         if (is_exit_here(map_cpy, px, py))
-        {
             count--;
-            if (!count)
-               return (1);
-        }
-        if (map_cpy[px + 1][py] == '0')
-			map_cpy[px + 1][py] = 'T';
-		if (map_cpy[px][py + 1] == '0')
-			map_cpy[px][py + 1] = 'T';
-		if (map_cpy[px - 1][py] == '0')
-			map_cpy[px - 1][py] = 'T';
-		if (map_cpy[px][py - 1] == '0')
-			map_cpy[px][py - 1] = 'T';
+        if (map_cpy[py + 1][px] == '0')
+            map_cpy[py + 1][px] = 'T';
+        if (map_cpy[py][px + 1] == '0')
+            map_cpy[py][px + 1] = 'T';
+        if (map_cpy[py - 1][px] == '0')
+            map_cpy[py - 1][px] = 'T';
+        if (map_cpy[py][px - 1] == '0')
+            map_cpy[py][px - 1] = 'T';
+        look_for_search(map_cpy, &count);
+        //print_map(map_cpy);
+        if (!count)
+            return (1);
 		searching(map_cpy, &px, &py, &to_search);
 	}
     free_map(map_cpy);

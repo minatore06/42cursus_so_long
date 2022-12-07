@@ -10,7 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 #include "so_long.h"
-
+//aggiungere effetto zittoria puzza
+//aggiungere enemy patrol
 char	**get_map(char *map_file, t_mlxs *vars)
 {
 	int		fd;
@@ -40,6 +41,7 @@ char	**get_map(char *map_file, t_mlxs *vars)
 	}
 	vars->width = ft_strlen(map[0]);
 	vars->height = i - 1;
+	close(fd);
 	return (map);
 }
 
@@ -118,6 +120,31 @@ int	map_check(char **map, char *set, t_mlxs *vars)
 	return (0);
 }
 
+void	put_enemies(t_mlxs *vars)
+{
+	int	i;
+	int	j;
+	int	x;
+
+	x = 3;
+	while (x)
+	{
+		i = rand() % (vars->height / 64);
+		j = rand() % (vars->width / 64);
+		ft_printf("i: %d, J: %d", i, j);
+		if (vars->map[i][j] != '0')
+			continue ;
+		vars->map[i][j] = '1';
+		if (!is_path_real(vars->map))
+		{
+			vars->map[i][j] = '0';
+			continue ;
+		}
+		vars->map[i][j] = 'M';
+		x--;
+	}
+}
+
 int	main(int argc, char *argv[])
 {
 	int		i;
@@ -155,65 +182,75 @@ int	main(int argc, char *argv[])
 	mc_walk[7] = "./textures/mc_walk_animation/walk_flip4.xpm";
 	mlx_vars.frame = 0;
 	mlx_vars.movements = 0;
+	mlx_vars.end = 0;
 	mlx_vars.mlx = mlx_init();
 	if (mlx_vars.mlx == NULL)
 		return (1);
-	mlx_vars.terrain.img[0].img = mlx_xpm_file_to_image(mlx_vars.mlx, "./textures/map/grass.xpm", &mlx_vars.terrain.width[0], &mlx_vars.terrain.height[0]);
-	if (!mlx_vars.terrain.img[0].img)
+	mlx_vars.terrain.img = mlx_xpm_file_to_image(mlx_vars.mlx, "./textures/map/grass.xpm", &mlx_vars.terrain.width, &mlx_vars.terrain.height);
+	if (!mlx_vars.terrain.img)
 	{
 		mlx_destroy_display(mlx_vars.mlx);
 		free(mlx_vars.mlx);
 		ft_printf("Scoppiato tutto");
 		return (1);
 	}
-	mlx_vars.terrain.img[0].addr = mlx_get_data_addr(mlx_vars.terrain.img[0].img, &mlx_vars.terrain.img[0].bpp, &mlx_vars.terrain.img[0].line_len, &mlx_vars.terrain.img[0].endian);
-	mlx_vars.border.img[0].img = mlx_xpm_file_to_image(mlx_vars.mlx, "./textures/map/water.xpm", &mlx_vars.border.width[0], &mlx_vars.border.height[0]);
-	if (!mlx_vars.border.img[0].img)
+	mlx_vars.terrain.addr = mlx_get_data_addr(mlx_vars.terrain.img, &mlx_vars.terrain.bpp, &mlx_vars.terrain.line_len, &mlx_vars.terrain.endian);
+	mlx_vars.border.img = mlx_xpm_file_to_image(mlx_vars.mlx, "./textures/map/water.xpm", &mlx_vars.border.width, &mlx_vars.border.height);
+	if (!mlx_vars.border.img)
 	{
 		mlx_destroy_display(mlx_vars.mlx);
 		free(mlx_vars.mlx);
 		ft_printf("Scoppiato tutto");
 		return (1);
 	}
-	mlx_vars.border.img[0].addr = mlx_get_data_addr(mlx_vars.border.img[0].img, &mlx_vars.border.img[0].bpp, &mlx_vars.border.img[0].line_len, &mlx_vars.border.img[0].endian);
-	mlx_vars.wall.img[0].img = mlx_xpm_file_to_image(mlx_vars.mlx, "./textures/map/rock.xpm", &mlx_vars.wall.width[0], &mlx_vars.wall.height[0]);
-	if (!mlx_vars.wall.img[0].img)
+	mlx_vars.border.addr = mlx_get_data_addr(mlx_vars.border.img, &mlx_vars.border.bpp, &mlx_vars.border.line_len, &mlx_vars.border.endian);
+	mlx_vars.wall.img = mlx_xpm_file_to_image(mlx_vars.mlx, "./textures/map/rock.xpm", &mlx_vars.wall.width, &mlx_vars.wall.height);
+	if (!mlx_vars.wall.img)
 	{
 		mlx_destroy_display(mlx_vars.mlx);
 		free(mlx_vars.mlx);
 		ft_printf("Scoppiato tutto");
 		return (1);
 	}
-	mlx_vars.wall.img[0].addr = mlx_get_data_addr(mlx_vars.wall.img[0].img, &mlx_vars.wall.img[0].bpp, &mlx_vars.wall.img[0].line_len, &mlx_vars.wall.img[0].endian);
-	mlx_vars.collectible.img[0].img = mlx_xpm_file_to_image(mlx_vars.mlx, "./textures/map/crystal.xpm", &mlx_vars.collectible.width[0], &mlx_vars.collectible.height[0]);
-	if (!mlx_vars.collectible.img[0].img)
+	mlx_vars.wall.addr = mlx_get_data_addr(mlx_vars.wall.img, &mlx_vars.wall.bpp, &mlx_vars.wall.line_len, &mlx_vars.wall.endian);
+	mlx_vars.collectible.img = mlx_xpm_file_to_image(mlx_vars.mlx, "./textures/map/crystal.xpm", &mlx_vars.collectible.width, &mlx_vars.collectible.height);
+	if (!mlx_vars.collectible.img)
 	{
 		mlx_destroy_display(mlx_vars.mlx);
 		free(mlx_vars.mlx);
 		ft_printf("Scoppiato tutto");
 		return (1);
 	}
-	mlx_vars.collectible.img[0].addr = mlx_get_data_addr(mlx_vars.collectible.img[0].img, &mlx_vars.collectible.img[0].bpp, &mlx_vars.collectible.img[0].line_len, &mlx_vars.collectible.img[0].endian);
-	mlx_vars.exit.img[0].img = mlx_xpm_file_to_image(mlx_vars.mlx, "./textures/map/portal_closed.xpm", &mlx_vars.exit.width[0], &mlx_vars.exit.height[0]);
-	if (!mlx_vars.exit.img[0].img)
+	mlx_vars.collectible.addr = mlx_get_data_addr(mlx_vars.collectible.img, &mlx_vars.collectible.bpp, &mlx_vars.collectible.line_len, &mlx_vars.collectible.endian);
+	mlx_vars.exit_close.img = mlx_xpm_file_to_image(mlx_vars.mlx, "./textures/map/portal_closed.xpm", &mlx_vars.exit_close.width, &mlx_vars.exit_close.height);
+	if (!mlx_vars.exit_close.img)
 	{
 		mlx_destroy_display(mlx_vars.mlx);
 		free(mlx_vars.mlx);
 		ft_printf("Scoppiato tutto");
 		return (1);
 	}
-	mlx_vars.exit.img[0].addr = mlx_get_data_addr(mlx_vars.exit.img[0].img, &mlx_vars.exit.img[0].bpp, &mlx_vars.exit.img[0].line_len, &mlx_vars.exit.img[0].endian);
-	mlx_vars.exit.img[1].img = mlx_xpm_file_to_image(mlx_vars.mlx, "./textures/map/portal_open.xpm", &mlx_vars.exit.width[1], &mlx_vars.exit.height[1]);
-	if (!mlx_vars.exit.img[1].img)
+	mlx_vars.exit_close.addr = mlx_get_data_addr(mlx_vars.exit_close.img, &mlx_vars.exit_close.bpp, &mlx_vars.exit_close.line_len, &mlx_vars.exit_close.endian);
+	mlx_vars.exit_open.img = mlx_xpm_file_to_image(mlx_vars.mlx, "./textures/map/portal_open.xpm", &mlx_vars.exit_open.width, &mlx_vars.exit_open.height);
+	if (!mlx_vars.exit_open.img)
 	{
 		mlx_destroy_display(mlx_vars.mlx);
 		free(mlx_vars.mlx);
 		ft_printf("Scoppiato tutto");
 		return (1);
 	}
-	mlx_vars.exit.img[1].addr = mlx_get_data_addr(mlx_vars.exit.img[1].img, &mlx_vars.exit.img[1].bpp, &mlx_vars.exit.img[1].line_len, &mlx_vars.exit.img[1].endian);
-	mlx_vars.width *= mlx_vars.terrain.width[0];
-	mlx_vars.height *= mlx_vars.terrain.height[0];
+	mlx_vars.exit_open.addr = mlx_get_data_addr(mlx_vars.exit_open.img, &mlx_vars.exit_open.bpp, &mlx_vars.exit_open.line_len, &mlx_vars.exit_open.endian);
+	mlx_vars.dead.img = mlx_xpm_file_to_image(mlx_vars.mlx, "./textures/map/dead.xpm", &mlx_vars.dead.width, &mlx_vars.dead.height);
+	if (!mlx_vars.dead.img)
+	{
+		mlx_destroy_display(mlx_vars.mlx);
+		free(mlx_vars.mlx);
+		ft_printf("Scoppiato tutto");
+		return (1);
+	}
+	mlx_vars.dead.addr = mlx_get_data_addr(mlx_vars.dead.img, &mlx_vars.dead.bpp, &mlx_vars.dead.line_len, &mlx_vars.dead.endian);
+	mlx_vars.width *= mlx_vars.terrain.width;
+	mlx_vars.height *= mlx_vars.terrain.height;
 	mlx_vars.win = mlx_new_window(mlx_vars.mlx, mlx_vars.width, mlx_vars.height, "Gioco da GAMING!");
 	if (mlx_vars.win == NULL)
 	{
@@ -223,7 +260,7 @@ int	main(int argc, char *argv[])
 	i = 0;
 	while (i < 8)
 	{
-		mlx_vars.enemy.img[i].img = mlx_xpm_file_to_image(mlx_vars.mlx, capybara_an[i], &mlx_vars.enemy.width[i], &mlx_vars.enemy.height[i]);
+		mlx_vars.enemy.img[i].img = mlx_xpm_file_to_image(mlx_vars.mlx, capybara_an[i], &mlx_vars.enemy.img[i].width, &mlx_vars.enemy.img[i].height);
 		if (!mlx_vars.enemy.img[i].img)
 		{
 			mlx_destroy_display(mlx_vars.mlx);
@@ -237,7 +274,7 @@ int	main(int argc, char *argv[])
 	i = 0;
 	while (i < 8)
 	{
-		mlx_vars.mc.img[i].img = mlx_xpm_file_to_image(mlx_vars.mlx, mc_walk[i], &mlx_vars.mc.width[i], &mlx_vars.mc.height[i]);
+		mlx_vars.mc.img[i].img = mlx_xpm_file_to_image(mlx_vars.mlx, mc_walk[i], &mlx_vars.mc.img[i].width, &mlx_vars.mc.img[i].height);
 		if (!mlx_vars.mc.img[i].img)
 		{
 			mlx_destroy_display(mlx_vars.mlx);
@@ -251,8 +288,7 @@ int	main(int argc, char *argv[])
 	mlx_vars.mc.flip = 0;
 	get_player(mlx_vars.map, &mlx_vars.mc.x, &mlx_vars.mc.y);
 	ft_printf("x %d, y %d\n", mlx_vars.mc.x, mlx_vars.mc.y);
-	mlx_vars.enemy.x = 500;
-	mlx_vars.enemy.y = 500;
+	put_enemies(&mlx_vars);
 	render_map(&mlx_vars);
 	mlx_hook(mlx_vars.win, 3, 1L<<1, key_press_up, &mlx_vars);
 	mlx_hook(mlx_vars.win, 17, 0, ft_close, &mlx_vars);
