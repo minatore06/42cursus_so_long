@@ -10,15 +10,15 @@ void	escape_game(t_mlxs *vars, int x, int y)
 {
 	if (!vars->c_collectible)
 	{
-		vars->map[y][x] = '0';
+		vars->map[y][x] = 'F';
 		vars->end = 1;
 	}
 }
 
 void	player_funeral(t_mlxs *vars, int x, int y)
 {
-	vars->map[y][x] = 'D';
-	vars->end = 1;
+	vars->map[y][x] = 'F';
+	vars->end = -1;
 }
 
 int	key_press_up(int keycode, t_mlxs *vars)
@@ -37,6 +37,8 @@ int	key_press_up(int keycode, t_mlxs *vars)
 			collect_collectible(vars, vars->mc.x - 1, vars->mc.y);
 		else if (vars->map[vars->mc.y][vars->mc.x - 1] == 'E')
 			escape_game(vars, vars->mc.x, vars->mc.y);
+		else if (vars->map[vars->mc.y][vars->mc.x - 1] == 'N')
+			player_funeral(vars, vars->mc.x, vars->mc.y);
 		else if (vars->map[vars->mc.y][vars->mc.x - 1] == 'M')
 			player_funeral(vars, vars->mc.x, vars->mc.y);
  		else if (vars->map[vars->mc.y][vars->mc.x - 1] != '1')
@@ -55,6 +57,8 @@ int	key_press_up(int keycode, t_mlxs *vars)
 			collect_collectible(vars, vars->mc.x, vars->mc.y - 1);
 		else if (vars->map[vars->mc.y - 1][vars->mc.x] == 'E')
 			escape_game(vars, vars->mc.x, vars->mc.y);
+		else if (vars->map[vars->mc.y - 1][vars->mc.x] == 'N')
+			player_funeral(vars, vars->mc.x, vars->mc.y);
 		else if (vars->map[vars->mc.y - 1][vars->mc.x] == 'M')
 			player_funeral(vars, vars->mc.x, vars->mc.y);
 		else if (vars->map[vars->mc.y - 1][vars->mc.x] != '1')
@@ -72,6 +76,8 @@ int	key_press_up(int keycode, t_mlxs *vars)
 			collect_collectible(vars, vars->mc.x + 1, vars->mc.y);
 		else if (vars->map[vars->mc.y - 1][vars->mc.x] == 'E')
 			escape_game(vars, vars->mc.x, vars->mc.y);	
+		else if (vars->map[vars->mc.y][vars->mc.x + 1] == 'N')
+			player_funeral(vars, vars->mc.x, vars->mc.y);
 		else if (vars->map[vars->mc.y][vars->mc.x + 1] == 'M')
 			player_funeral(vars, vars->mc.x, vars->mc.y);
 		else if (vars->map[vars->mc.y][vars->mc.x + 1] != '1')
@@ -90,6 +96,8 @@ int	key_press_up(int keycode, t_mlxs *vars)
 			collect_collectible(vars, vars->mc.x, vars->mc.y + 1);
 		else if (vars->map[vars->mc.y + 1][vars->mc.x] == 'E')
 			escape_game(vars, vars->mc.x, vars->mc.y);
+		else if (vars->map[vars->mc.y + 1][vars->mc.x] == 'N')
+			player_funeral(vars, vars->mc.x, vars->mc.y);
 		else if (vars->map[vars->mc.y + 1][vars->mc.x] == 'M')
 			player_funeral(vars, vars->mc.x, vars->mc.y);
 		else if (vars->map[vars->mc.y + 1][vars->mc.x] != '1')
@@ -120,6 +128,6 @@ int	ft_close(t_mlxs *vars)
 	mlx_destroy_window(vars->mlx, vars->win);
 	mlx_destroy_display(vars->mlx);
 	free(vars->mlx);
-	free_map(vars->map);
+	free_map((void **)vars->map);
 	exit(0);
 }

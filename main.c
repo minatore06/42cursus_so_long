@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 #include "so_long.h"
-//aggiungere effetto zittoria puzza
 //aggiungere enemy patrol
 char	**get_map(char *map_file, t_mlxs *vars)
 {
@@ -120,14 +119,38 @@ int	map_check(char **map, char *set, t_mlxs *vars)
 	return (0);
 }
 
+int	count_zeros(char **map)
+{
+	int	count;
+	int	i;
+	int	j;
+
+	count = 0;
+	i = 0;
+	while (map[i])
+	{
+		j = 0;
+		while (map[i][j])
+		{
+			if (map[i][j] == '0')
+				count++;
+			j++;
+		}
+		i++;
+	}
+	return (count);
+}
+
 void	put_enemies(t_mlxs *vars)
 {
 	int	i;
 	int	j;
 	int	x;
+	int	space_count;
 
-	x = 3;
-	while (x)
+	space_count = count_zeros(vars->map);
+	x = 4;
+	while (x && space_count)
 	{
 		i = rand() % (vars->height / 64);
 		j = rand() % (vars->width / 64);
@@ -137,10 +160,14 @@ void	put_enemies(t_mlxs *vars)
 		vars->map[i][j] = '1';
 		if (!is_path_real(vars->map))
 		{
+			space_count--;
 			vars->map[i][j] = '0';
 			continue ;
 		}
-		vars->map[i][j] = 'M';
+		if (x != 1)
+			vars->map[i][j] = 'N';
+		else
+			vars->map[i][j] = 'M';
 		x--;
 	}
 }
@@ -152,6 +179,8 @@ int	main(int argc, char *argv[])
 	t_mlxs	mlx_vars;
 	char	*capybara_an[8];
 	char	*mc_walk[8];
+	char	*victory_an[3];
+	char	*patrol_an[4];
 
 	if (argc != 2)
 		return (0);
@@ -180,6 +209,13 @@ int	main(int argc, char *argv[])
 	mc_walk[5] = "./textures/mc_walk_animation/walk_flip2.xpm";
 	mc_walk[6] = "./textures/mc_walk_animation/walk_flip3.xpm";
 	mc_walk[7] = "./textures/mc_walk_animation/walk_flip4.xpm";
+	victory_an[0] = "./textures/map/victory1.xpm";
+	victory_an[1] = "./textures/map/victory2.xpm";
+	victory_an[2] = "./textures/map/victory3.xpm";
+	patrol_an[0] = "./textures/patrol/enemy_patrol1.xpm";
+	patrol_an[1] = "./textures/patrol/enemy_patrol2.xpm";
+	patrol_an[2] = "./textures/patrol/enemy_patrol3.xpm";
+	patrol_an[3] = "./textures/patrol/enemy_patrol_dead.xpm";
 	mlx_vars.frame = 0;
 	mlx_vars.movements = 0;
 	mlx_vars.end = 0;
@@ -283,6 +319,34 @@ int	main(int argc, char *argv[])
 			return (1);
 		}
 		mlx_vars.mc.img[i].addr = mlx_get_data_addr(mlx_vars.mc.img[i].img, &mlx_vars.mc.img[i].bpp, &mlx_vars.mc.img[i].line_len, &mlx_vars.mc.img[i].endian);
+		i++;
+	}
+	i = 0;
+	while (i < 3)
+	{
+		mlx_vars.victory[i].img = mlx_xpm_file_to_image(mlx_vars.mlx, victory_an[i], &mlx_vars.victory[i].width, &mlx_vars.victory[i].height);
+		if (!mlx_vars.victory[i].img)
+		{
+			mlx_destroy_display(mlx_vars.mlx);
+			free(mlx_vars.mlx);
+			ft_printf("Scoppiato tutto");
+			return (1);
+		}
+		mlx_vars.victory[i].addr = mlx_get_data_addr(mlx_vars.victory[i].img, &mlx_vars.victory[i].bpp, &mlx_vars.victory[i].line_len, &mlx_vars.victory[i].endian);
+		i++;
+	}
+		i = 0;
+	while (i < 4)
+	{
+		mlx_vars.patrol.img[i].img = mlx_xpm_file_to_image(mlx_vars.mlx, patrol_an[i], &mlx_vars.patrol.img[i].width, &mlx_vars.patrol.img[i].height);
+		if (!mlx_vars.patrol.img[i].img)
+		{
+			mlx_destroy_display(mlx_vars.mlx);
+			free(mlx_vars.mlx);
+			ft_printf("Scoppiato tutto");
+			return (1);
+		}
+		mlx_vars.patrol.img[i].addr = mlx_get_data_addr(mlx_vars.patrol.img[i].img, &mlx_vars.patrol.img[i].bpp, &mlx_vars.patrol.img[i].line_len, &mlx_vars.patrol.img[i].endian);
 		i++;
 	}
 	mlx_vars.mc.flip = 0;

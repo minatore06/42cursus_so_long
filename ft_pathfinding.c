@@ -135,7 +135,7 @@ char    **dup_map(char **map)
     return (dup);
 }
 
-void    free_map(char **map)
+void    free_map(void **map)
 {
     int i;
 
@@ -171,19 +171,6 @@ void    get_player(char **map, int *px, int *py)
 	}
 }
 
-void    print_map(char **map)
-{
-    int i;
-
-    i = 0;
-    while (map[i])
-    {
-        ft_printf("%s\n", map[i]);
-        i++;
-    }
-    ft_printf("\n");
-}
-
 int	is_path_real(char **map)
 {
 	int	    px;
@@ -217,6 +204,6 @@ int	is_path_real(char **map)
             return (1);
 		searching(map_cpy, &px, &py, &to_search);
 	}
-    free_map(map_cpy);
+    free_map((void **)map_cpy);
     return (0);
 }

@@ -46,6 +46,7 @@ typedef struct	s_mlxs {
 	t_img	exit_open;
 	t_img	exit_close;
 	t_img	dead;
+	t_img	victory[3];
 	t_obj	mc;
 	t_obj	enemy;
 	t_obj	patrol;
@@ -56,6 +57,14 @@ typedef struct	s_mlxs {
 	int		width;
 	int		height;
 }				t_mlxs;
+
+typedef struct	s_path {
+	int gcost;
+	int	hcost;
+	int	prev_i;
+	int	prev_j;
+	int	passed;
+}				t_path;
 
 int		create_trgb(int t, int r, int g, int b);
 int		get_t(int trgb);
@@ -71,9 +80,11 @@ int		ft_close(t_mlxs *vars);
 void	ft_mlx_pixel_put(t_img *data, int x, int y, int color);
 int		render_next_frame(t_mlxs *vars);
 void	render_map(t_mlxs *vars);
-void    free_map(char **map);
+void    free_map(void **map);
 int 	count_collectibles(char **map);
 void    get_player(char **map, int *px, int *py);
 int		is_path_real(char **map);
+void    enemy_pathfinding(t_mlxs *vars);
+void    get_enemy_position(char **map, int *ex, int *ey);
 
 #endif

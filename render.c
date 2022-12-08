@@ -8,6 +8,14 @@ void	ft_mlx_pixel_put(t_img *data, int x, int y, int color)
 	*(unsigned int *)dst = color;
 }
 
+void	victory_animation(t_mlxs *vars, int i, int j)
+{
+	mlx_put_image_to_window(vars->mlx, vars->win, vars->victory[vars->end - 1].img, j, i + 8);
+	vars->end++;
+	if (vars->end == 4)
+		vars->map[i / 64][j / 64] = '0';
+}
+
 void	render_map(t_mlxs *vars)
 {
 	int	i;
@@ -31,11 +39,17 @@ void	render_map(t_mlxs *vars)
 				mlx_put_image_to_window(vars->mlx, vars->win, vars->exit_open.img, j, i);
 			else
 				mlx_put_image_to_window(vars->mlx, vars->win, vars->terrain.img, j, i);
-			if (vars->map[i / 64][j / 64] == 'M')
+			if (vars->map[i / 64][j / 64] == 'N')
 				mlx_put_image_to_window(vars->mlx, vars->win, vars->enemy.img[vars->frame / 20000 % 8].img, j, i + 16);
-			if (vars->map[i / 64][j / 64] == 'D')
+			else if (vars->map[i / 64][j / 64] == 'M' && vars->end < 1)
+				mlx_put_image_to_window(vars->mlx, vars->win, vars->patrol.img[vars->frame / 20000 % 3].img, j, i);
+			else if (vars->map[i / 64][j / 64] == 'M' && vars->end > 0)
+				mlx_put_image_to_window(vars->mlx, vars->win, vars->patrol.img[3].img, j, i);
+			else if (vars->map[i / 64][j / 64] == 'F' && vars->end == -1)
 				mlx_put_image_to_window(vars->mlx, vars->win, vars->dead.img, j, i + 8);
-			if (vars->map[i / 64][j / 64] == 'P' && !vars->mc.flip)
+			else if (vars->map[i / 64][j / 64] == 'F' && vars->end > 0)
+				victory_animation(vars, i, j);
+			else if (vars->map[i / 64][j / 64] == 'P' && !vars->mc.flip)
 				mlx_put_image_to_window(vars->mlx, vars->win, vars->mc.img[vars->frame / 20000 % 4].img, j + 16, i);
 			else if (vars->map[i / 64][j / 64] == 'P' && vars->mc.flip)
 				mlx_put_image_to_window(vars->mlx, vars->win, vars->mc.img[vars->frame / 20000 % 4 + 4].img, j + 16, i);
@@ -62,5 +76,7 @@ int	render_next_frame(t_mlxs *vars)
 		mlx_clear_window(vars->mlx, vars->win);
 		render_map(vars);
 	}
-return (0);
+	if (!(vars->frame % 50000) && !vars->end)
+		enemy_pathfinding(vars);
+	return (0);
 }
