@@ -35,7 +35,6 @@ static int get_hcost(char **map, int x, int y)
         else if (dist_x)
             dist_x--;
     }
-    //cost += 14 * dist_y;
     return (cost);
 }
 
@@ -60,7 +59,6 @@ static int get_gcost(int x, int y, int i, int j)
         else if (dist_x)
             dist_x--;
     }
-    //cost += 14 * dist_y;
     return (cost);
 }
 
@@ -96,6 +94,8 @@ static int    get_lowest_cost(char **map, t_path **map_cost, int *x, int *y)
     int fcost;
 
     min_fcost = -1;
+    min[0] = 0;
+    min[1] = 0;
     i = 0;
     while (map[i])
     {
@@ -122,7 +122,6 @@ static int    get_lowest_cost(char **map, t_path **map_cost, int *x, int *y)
     if (min_fcost != -1)
     {
         map_cost[min[0]][min[1]].passed = 1;
-        ft_printf("i: %d, j: %d| ", min[0], min[1]);
         *x = min[1];
         *y = min[0];
         return (0);
@@ -136,7 +135,6 @@ void    random_move(char **map, int x, int y)
 
     while (1)
     {
-        ft_printf("hey");
         n = rand() % 4;
         if (n == 0 && map[y + 1][x] == '0')
         {
@@ -213,7 +211,6 @@ void    enemy_pathfinding(t_mlxs *vars, char **map, int x, int y)
     j = x;
     while (1)
     {
-        //print_map(map, map_costs);
         mod_i = -1;
         while (mod_i < 2)
         {
@@ -241,7 +238,6 @@ void    enemy_pathfinding(t_mlxs *vars, char **map, int x, int y)
                     }
                     if (map[i][j] == 'P')
                     {
-                        print_map(map, map_costs);
                         while(map[map_costs[i][j].prev_i][map_costs[i][j].prev_j] != 'M')
                         {
                             mod_i = map_costs[i][j].prev_i;
@@ -290,20 +286,10 @@ void    enemy_manager(t_mlxs *vars)
         while (map_cpy[i][j])
         {
             if (map_cpy[i][j] == 'M')
-            {
-                ft_printf("SOSSASSISSUSSeS\n");
                 enemy_pathfinding(vars, vars->map, j, i);
-            }
             j++;
         }
         i++;
     }
     free_map((void **)map_cpy);
 }
-//1111111111
-//10001C0001
-//1100C00101
-//1M00001111
-//1E00100011
-//100001C001
-//1111111111

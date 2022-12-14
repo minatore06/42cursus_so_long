@@ -10,13 +10,11 @@ void	ft_mlx_pixel_put(t_img *data, int x, int y, int color)
 
 void	victory_animation(t_mlxs *vars, int i, int j)
 {
-	mlx_put_image_to_window(vars->mlx, vars->win, vars->victory[vars->end - 1].img, j, i + 8);
 	vars->end++;
-	if (vars->end == 4)
-	{
-		vars->map[i / 64][j / 64] = '0';
+	if (vars->end < 4)
+		mlx_put_image_to_window(vars->mlx, vars->win, vars->victory[vars->end - 1].img, j, i + 8);
+	if (vars->end == 6)
 		ft_close(vars);
-	}
 }
 
 void	render_map(t_mlxs *vars)
@@ -64,15 +62,20 @@ void	render_map(t_mlxs *vars)
 
 int	render_next_frame(t_mlxs *vars)
 {
+	char	*string;
+
 	vars->frame++;
 	if (!(vars->frame % 20000))
 	{
 		mlx_clear_window(vars->mlx, vars->win);
 		render_map(vars);
-		if (vars->end < 0)
-			ft_close(vars);
+		string = ft_strjoin("Movements: ", ft_itoa(vars->movements));
+		mlx_string_put(vars->mlx, vars->win, 5, 20, 0, string);
+		free(string);
 	}
 	if (!(vars->frame % 50000) && !vars->end)
 		enemy_manager(vars);
+	if (!(vars->frame % 200000) && vars->end < 0)
+		ft_close(vars);
 	return (0);
 }

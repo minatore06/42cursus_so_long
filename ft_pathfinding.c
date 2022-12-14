@@ -179,9 +179,10 @@ int	is_path_real(char **map)
     int     count;
     char    **map_cpy;
 
+    px = 0;
+    py = 0;
     map_cpy = dup_map(map);
     get_player(map_cpy, &px, &py);
-    //settare a S celle cercate, settare a T celle da cercare, se E accanto a S fine, ogni 0 attorno a S diventa T
     to_search = 1;
     count = count_collectibles(map_cpy);
     count++;
@@ -199,7 +200,6 @@ int	is_path_real(char **map)
         if (map_cpy[py][px - 1] == '0')
             map_cpy[py][px - 1] = 'T';
         look_for_search(map_cpy, &count);
-        //print_map(map_cpy);
         if (!count)
             return (1);
 		searching(map_cpy, &px, &py, &to_search);
