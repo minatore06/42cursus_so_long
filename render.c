@@ -13,7 +13,10 @@ void	victory_animation(t_mlxs *vars, int i, int j)
 	mlx_put_image_to_window(vars->mlx, vars->win, vars->victory[vars->end - 1].img, j, i + 8);
 	vars->end++;
 	if (vars->end == 4)
+	{
 		vars->map[i / 64][j / 64] = '0';
+		ft_close(vars);
+	}
 }
 
 void	render_map(t_mlxs *vars)
@@ -61,15 +64,6 @@ void	render_map(t_mlxs *vars)
 
 int	render_next_frame(t_mlxs *vars)
 {
-	int	rainbow[6];
-
-	rainbow[0] = create_trgb(0, 255, 0, 0);
-	rainbow[1] = create_trgb(0, 255, 165, 0);
-	rainbow[2] = create_trgb(0, 255, 255, 0);
-	rainbow[3] = create_trgb(0, 0, 255, 0);
-	rainbow[4] = create_trgb(0, 0, 0, 255);
-	rainbow[5] = create_trgb(0, 128, 0, 128);
-
 	vars->frame++;
 	if (!(vars->frame % 20000))
 	{
@@ -77,6 +71,6 @@ int	render_next_frame(t_mlxs *vars)
 		render_map(vars);
 	}
 	if (!(vars->frame % 50000) && !vars->end)
-		enemy_pathfinding(vars);
+		enemy_manager(vars);
 	return (0);
 }

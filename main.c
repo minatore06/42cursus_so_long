@@ -141,15 +141,44 @@ int	count_zeros(char **map)
 	return (count);
 }
 
+int	count_free_space(char **map)
+{
+	int	i;
+	int	j;
+	int	count;
+
+	count = 0;
+	i = 0;
+	while (map[i])
+	{
+		j = 0;
+		while (map[i][j])
+		{
+			if (map[i][j] == '0')
+			{
+				map[i][j] = '1';
+				if (is_path_real(map))
+					count++;
+				map[i][j] = '0';
+			}
+			j++;
+		}
+		i++;
+	}
+	return (count);
+}
+
 void	put_enemies(t_mlxs *vars)
 {
 	int	i;
 	int	j;
 	int	x;
+	int	free_space;
 	int	space_count;
 
 	space_count = count_zeros(vars->map);
-	x = 4;
+	free_space = sqrt(count_free_space(vars->map));
+	x = free_space;
 	while (x && space_count)
 	{
 		i = rand() % (vars->height / 64);
@@ -164,10 +193,10 @@ void	put_enemies(t_mlxs *vars)
 			vars->map[i][j] = '0';
 			continue ;
 		}
-		if (x != 1)
-			vars->map[i][j] = 'N';
-		else
+		if (!(x % 5))
 			vars->map[i][j] = 'M';
+		else
+			vars->map[i][j] = 'N';
 		x--;
 	}
 }
@@ -192,7 +221,6 @@ int	main(int argc, char *argv[])
 		return (0);
 	}
 	mlx_vars.c_collectible = count_collectibles(mlx_vars.map);
-
 	capybara_an[0] = "./textures/capybara_idle_animation/idle1.xpm";
 	capybara_an[1] = "./textures/capybara_idle_animation/idle2.xpm";
 	capybara_an[2] = "./textures/capybara_idle_animation/idle3.xpm";
@@ -353,7 +381,7 @@ int	main(int argc, char *argv[])
 	get_player(mlx_vars.map, &mlx_vars.mc.x, &mlx_vars.mc.y);
 	ft_printf("x %d, y %d\n", mlx_vars.mc.x, mlx_vars.mc.y);
 	put_enemies(&mlx_vars);
-	render_map(&mlx_vars);
+	//render_map(&mlx_vars);
 	mlx_hook(mlx_vars.win, 3, 1L<<1, key_press_up, &mlx_vars);
 	mlx_hook(mlx_vars.win, 17, 0, ft_close, &mlx_vars);
 	mlx_loop_hook(mlx_vars.mlx, render_next_frame, &mlx_vars);

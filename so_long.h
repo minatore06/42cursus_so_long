@@ -15,6 +15,7 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <fcntl.h>
+# include <math.h>
 # include "mlx_linux/mlx.h"
 # include "libft/libft.h"
 
@@ -80,11 +81,13 @@ int		ft_close(t_mlxs *vars);
 void	ft_mlx_pixel_put(t_img *data, int x, int y, int color);
 int		render_next_frame(t_mlxs *vars);
 void	render_map(t_mlxs *vars);
+char    **dup_map(char **map);
 void    free_map(void **map);
 int 	count_collectibles(char **map);
 void    get_player(char **map, int *px, int *py);
 int		is_path_real(char **map);
-void    enemy_pathfinding(t_mlxs *vars);
+void    enemy_pathfinding(t_mlxs *vars, char **map, int x, int y);
 void    get_enemy_position(char **map, int *ex, int *ey);
+void    enemy_manager(t_mlxs *vars);
 
 #endif
