@@ -69,6 +69,8 @@ int	render_next_frame(t_mlxs *vars)
 	{
 		mlx_clear_window(vars->mlx, vars->win);
 		render_map(vars);
+		if (vars->end < 0)
+			ft_close(vars);
 	}
 	if (!(vars->frame % 50000) && !vars->end)
 		enemy_manager(vars);
