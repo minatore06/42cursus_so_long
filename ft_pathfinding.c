@@ -201,7 +201,10 @@ int	is_path_real(char **map)
             map_cpy[py][px - 1] = 'T';
         look_for_search(map_cpy, &count);
         if (!count)
+        {
+            free_map((void **)map_cpy);
             return (1);
+        }
 		searching(map_cpy, &px, &py, &to_search);
 	}
     free_map((void **)map_cpy);

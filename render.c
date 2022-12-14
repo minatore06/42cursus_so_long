@@ -63,14 +63,17 @@ void	render_map(t_mlxs *vars)
 int	render_next_frame(t_mlxs *vars)
 {
 	char	*string;
+	char	*poststr;
 
 	vars->frame++;
 	if (!(vars->frame % 20000))
 	{
 		mlx_clear_window(vars->mlx, vars->win);
 		render_map(vars);
-		string = ft_strjoin("Movements: ", ft_itoa(vars->movements));
+		poststr = ft_itoa(vars->movements);
+		string = ft_strjoin("Movements: ", poststr);
 		mlx_string_put(vars->mlx, vars->win, 5, 20, 0, string);
+		free(poststr);
 		free(string);
 	}
 	if (!(vars->frame % 50000) && !vars->end)
