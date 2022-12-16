@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   render.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: scaiazzo <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/12/16 11:05:49 by scaiazzo          #+#    #+#             */
+/*   Updated: 2022/12/16 11:05:52 by scaiazzo         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 #include "so_long.h"
 
 void	ft_mlx_pixel_put(t_img *data, int x, int y, int color)
@@ -10,11 +21,21 @@ void	ft_mlx_pixel_put(t_img *data, int x, int y, int color)
 
 void	victory_animation(t_mlxs *vars, int i, int j)
 {
+	t_img	*img;
+
 	vars->end++;
 	if (vars->end < 4)
-		mlx_put_image_to_window(vars->mlx, vars->win, vars->victory[vars->end - 1].img, j, i + 8);
+	{
+		img = vars->victory[vars->end - 1].img;
+		mlx_put_image_to_window(vars->mlx, vars->win, img, j, i + 8);
+	}
 	if (vars->end == 6)
 		ft_close(vars);
+}
+
+void	ft_put_image_to_window(t_mlxs *vars, t_img img, int x, int y)
+{
+	mlx_put_image_to_window(vars->mlx, vars->win, img.img, x, y);
 }
 
 void	render_map(t_mlxs *vars)
@@ -28,32 +49,8 @@ void	render_map(t_mlxs *vars)
 		j = 0;
 		while (j < vars->width)
 		{
-			if (vars->map[i / 64][j / 64] == '1' && (i == 0 || j == 0 || i == vars->height - 64 || j == vars->width - 64))
-				mlx_put_image_to_window(vars->mlx, vars->win, vars->border.img, j, i);
-			else if (vars->map[i / 64][j / 64] == '1')
-				mlx_put_image_to_window(vars->mlx, vars->win, vars->wall.img, j, i);
-			else if (vars->map[i / 64][j / 64] == 'C')
-				mlx_put_image_to_window(vars->mlx, vars->win, vars->collectible.img, j, i);
-			else if (vars->map[i / 64][j / 64] == 'E' && vars->c_collectible)
-				mlx_put_image_to_window(vars->mlx, vars->win, vars->exit_close.img, j, i);
-			else if (vars->map[i / 64][j / 64] == 'E')
-				mlx_put_image_to_window(vars->mlx, vars->win, vars->exit_open.img, j, i);
-			else
-				mlx_put_image_to_window(vars->mlx, vars->win, vars->terrain.img, j, i);
-			if (vars->map[i / 64][j / 64] == 'N')
-				mlx_put_image_to_window(vars->mlx, vars->win, vars->enemy.img[vars->frame / 20000 % 8].img, j, i + 16);
-			else if (vars->map[i / 64][j / 64] == 'M' && vars->end < 1)
-				mlx_put_image_to_window(vars->mlx, vars->win, vars->patrol.img[vars->frame / 20000 % 3].img, j, i);
-			else if (vars->map[i / 64][j / 64] == 'M' && vars->end > 0)
-				mlx_put_image_to_window(vars->mlx, vars->win, vars->patrol.img[3].img, j, i);
-			else if (vars->map[i / 64][j / 64] == 'F' && vars->end == -1)
-				mlx_put_image_to_window(vars->mlx, vars->win, vars->dead.img, j, i + 8);
-			else if (vars->map[i / 64][j / 64] == 'F' && vars->end > 0)
-				victory_animation(vars, i, j);
-			else if (vars->map[i / 64][j / 64] == 'P' && !vars->mc.flip)
-				mlx_put_image_to_window(vars->mlx, vars->win, vars->mc.img[vars->frame / 20000 % 4].img, j + 16, i);
-			else if (vars->map[i / 64][j / 64] == 'P' && vars->mc.flip)
-				mlx_put_image_to_window(vars->mlx, vars->win, vars->mc.img[vars->frame / 20000 % 4 + 4].img, j + 16, i);
+			load_map(vars, vars->map, i, j);
+			load_characters(vars, vars->frame / 20000, i, j);
 			j += 64;
 		}
 		i += 64;

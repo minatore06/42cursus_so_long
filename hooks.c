@@ -1,114 +1,54 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   hooks.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: scaiazzo <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/12/15 12:02:26 by scaiazzo          #+#    #+#             */
+/*   Updated: 2022/12/15 12:02:29 by scaiazzo         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 #include "so_long.h"
 
-void	collect_collectible(t_mlxs *vars, int x, int y)
+int	keyboard_event(char cell, int x, int y, t_mlxs *vars)
 {
-	vars->map[y][x] = '0';
-	vars->c_collectible--;
-}
-
-void	escape_game(t_mlxs *vars, int x, int y)
-{
-	if (!vars->c_collectible)
+	if (cell == 'C')
 	{
-		vars->movements++;
-		vars->map[y][x] = 'F';
-		vars->end = 1;
+		collect_collectible(vars, x, y);
+		return (1);
 	}
-}
-
-void	player_funeral(t_mlxs *vars, int x, int y)
-{
-	vars->map[y][x] = 'F';
-	vars->end = -1;
+	else if (cell == 'E')
+	{
+		get_player(vars->map, &x, &y);
+		escape_game(vars, x, y);
+		return (1);
+	}
+	else if (cell == 'N' || cell == 'M')
+	{
+		get_player(vars->map, &x, &y);
+		player_funeral(vars, x, y);
+		return (1);
+	}
+	return (0);
 }
 
 int	key_press_up(int keycode, t_mlxs *vars)
 {
 	if (keycode == 65307)
-	{
-		mlx_destroy_window(vars->mlx, vars->win);
-		mlx_destroy_display(vars->mlx);
-		free(vars->mlx);
-		exit(0);
-	}
+		ft_close(vars);
 	if (keycode == 65361 && !vars->end)
-	{
-		if (vars->map[vars->mc.y][vars->mc.x - 1] == 'C')
-			collect_collectible(vars, vars->mc.x - 1, vars->mc.y);
-		else if (vars->map[vars->mc.y][vars->mc.x - 1] == 'E')
-			escape_game(vars, vars->mc.x, vars->mc.y);
-		else if (vars->map[vars->mc.y][vars->mc.x - 1] == 'N')
-			player_funeral(vars, vars->mc.x, vars->mc.y);
-		else if (vars->map[vars->mc.y][vars->mc.x - 1] == 'M')
-			player_funeral(vars, vars->mc.x, vars->mc.y);
- 		else if (vars->map[vars->mc.y][vars->mc.x - 1] != '1')
-		{
-			vars->map[vars->mc.y][vars->mc.x] = '0';
-			vars->mc.x--;
-			vars->map[vars->mc.y][vars->mc.x] = 'P';
-			vars->movements++;
-			vars->mc.flip = 1;
-		}
-	}
-	if (keycode == 65362 && !vars->end)
-	{
-		if (vars->map[vars->mc.y - 1][vars->mc.x] == 'C')
-			collect_collectible(vars, vars->mc.x, vars->mc.y - 1);
-		else if (vars->map[vars->mc.y - 1][vars->mc.x] == 'E')
-			escape_game(vars, vars->mc.x, vars->mc.y);
-		else if (vars->map[vars->mc.y - 1][vars->mc.x] == 'N')
-			player_funeral(vars, vars->mc.x, vars->mc.y);
-		else if (vars->map[vars->mc.y - 1][vars->mc.x] == 'M')
-			player_funeral(vars, vars->mc.x, vars->mc.y);
-		else if (vars->map[vars->mc.y - 1][vars->mc.x] != '1')
-		{	
-			vars->map[vars->mc.y][vars->mc.x] = '0';
-			vars->mc.y--;
-			vars->map[vars->mc.y][vars->mc.x] = 'P';
-			vars->movements++;
-		}
-	}
-	if (keycode == 65363 && !vars->end)
-	{
-		if (vars->map[vars->mc.y][vars->mc.x + 1] == 'C')
-			collect_collectible(vars, vars->mc.x + 1, vars->mc.y);
-		else if (vars->map[vars->mc.y][vars->mc.x + 1] == 'E')
-			escape_game(vars, vars->mc.x, vars->mc.y);	
-		else if (vars->map[vars->mc.y][vars->mc.x + 1] == 'N')
-			player_funeral(vars, vars->mc.x, vars->mc.y);
-		else if (vars->map[vars->mc.y][vars->mc.x + 1] == 'M')
-			player_funeral(vars, vars->mc.x, vars->mc.y);
-		else if (vars->map[vars->mc.y][vars->mc.x + 1] != '1')
-		{
-			vars->map[vars->mc.y][vars->mc.x] = '0';
-			vars->mc.x++;
-			vars->map[vars->mc.y][vars->mc.x] = 'P';
-			vars->movements++;
-			vars->mc.flip = 0;
-		}
-	}
-	if (keycode == 65364 && !vars->end)
-	{
-		if (vars->map[vars->mc.y + 1][vars->mc.x] == 'C')
-			collect_collectible(vars, vars->mc.x, vars->mc.y + 1);
-		else if (vars->map[vars->mc.y + 1][vars->mc.x] == 'E')
-			escape_game(vars, vars->mc.x, vars->mc.y);
-		else if (vars->map[vars->mc.y + 1][vars->mc.x] == 'N')
-			player_funeral(vars, vars->mc.x, vars->mc.y);
-		else if (vars->map[vars->mc.y + 1][vars->mc.x] == 'M')
-			player_funeral(vars, vars->mc.x, vars->mc.y);
-		else if (vars->map[vars->mc.y + 1][vars->mc.x] != '1')
-		{
-			vars->map[vars->mc.y][vars->mc.x] = '0';
-			vars->mc.y++;
-			vars->map[vars->mc.y][vars->mc.x] = 'P';
-			vars->movements++;
-		}
-	}
+		move_left(vars, vars->mc.x, vars->mc.y);
+	else if (keycode == 65362 && !vars->end)
+		move_up(vars, vars->mc.x, vars->mc.y);
+	else if (keycode == 65363 && !vars->end)
+		move_right(vars, vars->mc.x, vars->mc.y);
+	else if (keycode == 65364 && !vars->end)
+		move_down(vars, vars->mc.x, vars->mc.y);
 	return (0);
 }
 
-int	ft_close(t_mlxs *vars)
+static void	ft_destroy_images(t_mlxs *vars)
 {
 	int	i;
 
@@ -131,6 +71,11 @@ int	ft_close(t_mlxs *vars)
 	i = 0;
 	while (i < 4)
 		mlx_destroy_image(vars->mlx, vars->patrol.img[i++].img);
+}
+
+int	ft_close(t_mlxs *vars)
+{
+	ft_destroy_images(vars);
 	mlx_destroy_window(vars->mlx, vars->win);
 	mlx_destroy_display(vars->mlx);
 	free(vars->mlx);
