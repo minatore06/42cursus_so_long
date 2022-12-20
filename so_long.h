@@ -67,6 +67,13 @@ typedef struct	s_path {
 	int	passed;
 }				t_path;
 
+typedef struct s_cords {
+	int	i;
+	int	j;
+	int	x;
+	int y;
+}				t_cords;
+
 int		create_trgb(int t, int r, int g, int b);
 int		get_t(int trgb);
 int		get_r(int trgb);
@@ -99,14 +106,24 @@ void	free_map(void **map);
 int		is_exit_here(char **map, int x, int y);
 int		is_path_real(char **map);
 int		keyboard_event(char cell, int x, int y, t_mlxs *vars);
+void	get_enemy_position(char **map, int *ex, int *ey);
+void	set_get_lowest_cost_vars(int *min_fcost, int *min, int *i);
+int		is_lowest_cost(t_path **map_cost, int *min, int *x, int *y);
+t_path	**init_map_cost(char **map, t_mlxs *vars);
+int		get_mod_cords(int *n, int *mod, t_cords *cords);
+int		do_the_random_move(char **map, int n, int x, int y);
+void	random_move(char **map, int x, int y);
+int		get_hcost(char **map, int x, int y);
+int		get_gcost(int x, int y, int i, int j);
+int		min_cost(t_path cell_cost, t_path min_cell, int *min_fcost);
+int		get_lowest_cost(char **map, t_path **map_cost, int *x, int *y);
+void    enemy_pathfinding(t_mlxs *vars, char **map, int x, int y);
+void    enemy_manager(t_mlxs *vars);
 
 int		key_press_up(int keycode, t_mlxs *vars);
 int		button_press_down(int mbcode, t_mlxs *vars);
 int		ft_close(t_mlxs *vars);
 void	ft_mlx_pixel_put(t_img *data, int x, int y, int color);
 void	render_map(t_mlxs *vars);
-void    enemy_pathfinding(t_mlxs *vars, char **map, int x, int y);
-void    get_enemy_position(char **map, int *ex, int *ey);
-void    enemy_manager(t_mlxs *vars);
 
 #endif
