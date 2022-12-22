@@ -34,12 +34,11 @@ void	get_enemy_position(char **map, int *ex, int *ey)
 	}
 }
 
-void	set_get_lowest_cost_vars(int *min_fcost, int *min, int *i)
+void	set_get_lowest_cost_vars(int *min_fcost, int *min)
 {
 	*min_fcost = -1;
 	min[0] = 0;
 	min[1] = 0;
-	*i = 0;
 }
 
 int	is_lowest_cost(t_path **map_cost, int *min, int *x, int *y)
@@ -57,12 +56,14 @@ t_path	**init_map_cost(char **map, t_mlxs *vars)
 	t_path	**map_costs;
 
 	map_costs = malloc(sizeof(t_path *) * (vars->height / 64 + 1));
-	i = 0;
-	while (map[i])
-		map_costs[i++] = malloc(sizeof(t_path) * (vars->width / 64));
+	if (!map_costs)
+		return (NULL);
 	i = 0;
 	while (map[i])
 	{
+		map_costs[i] = malloc(sizeof(t_path) * (vars->width / 64));
+		if (!map_costs[i])
+			return (free_unfinished_map((void **)map_costs, i));
 		j = 0;
 		while (map[i][j])
 		{
@@ -73,11 +74,11 @@ t_path	**init_map_cost(char **map, t_mlxs *vars)
 		}
 		i++;
 	}
-	map_costs[i] = NULL;
+	map_costs[vars->height / 64] = NULL;
 	return (map_costs);
 }
 
-int	get_mod_cords(int *n, int *mod, t_cords *cords)
+int	get_mod_cords(int *n, int *mod)
 {
 	(*n)++;
 	if (*n == 1)
@@ -95,13 +96,12 @@ int	get_mod_cords(int *n, int *mod, t_cords *cords)
 		mod[0] = 1;
 		mod[1] = 0;
 	}
-	else
+	else if (*n == 4)
 	{
 		mod[0] = 0;
 		mod[1] = -1;
-		*n = 0;
 	}
-	cords->i += mod[0];
-	cords->j += mod[1];
+	else
+		(*n) = 0;
 	return (*n);
 }

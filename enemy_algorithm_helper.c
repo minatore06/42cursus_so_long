@@ -67,16 +67,16 @@ int	min_cost(t_path cell_cost, t_path min_cell, int *min_fcost)
 	int	fcost;
 
 	fcost = cell_cost.gcost + cell_cost.hcost;
-	if (fcost > 0 && (*min_fcost < 0 || fcost < *min_fcost)
+	if (fcost > 0 && ((*min_fcost) < 0 || fcost < (*min_fcost))
 		&& !cell_cost.passed)
 	{
-		*min_fcost = fcost;
+		(*min_fcost) = fcost;
 		return (1);
 	}
-	else if (fcost > 0 && (*min_fcost < 0 || (fcost == *min_fcost
+	else if (fcost > 0 && ((*min_fcost) < 0 || (fcost == (*min_fcost)
 				&& cell_cost.hcost < min_cell.hcost)) && !cell_cost.passed)
 	{
-		*min_fcost = fcost;
+		(*min_fcost) = fcost;
 		return (1);
 	}
 	return (0);
@@ -89,7 +89,8 @@ int	get_lowest_cost(char **map, t_path **map_cost, int *x, int *y)
 	int	min[2];
 	int	min_fcost;
 
-	set_get_lowest_cost_vars(&min_fcost, min, &i);
+	set_get_lowest_cost_vars(&min_fcost, min);
+	i = 0;
 	while (map[i])
 	{
 		j = 0;

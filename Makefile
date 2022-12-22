@@ -3,7 +3,7 @@ FLAGS=-Wall -Wextra -Werror -g -O0
 NAME=solonglib.a
 OUT=game.out
 
-FILES=main.c colors.c mod_color.c hooks.c render.c ft_pathfinding.c enemy_pathfinding.c events_utils.c get_map_info.c get_map.c load_map.c movement_manager.c check_map.c enemy_algorithm_helper.c enemy_pathfinding_utils.c enemy_random_move.c
+FILES=main.c hooks.c render.c ft_pathfinding.c enemy_pathfinding.c events_utils.c get_map_info.c get_map.c load_map.c movement_manager.c check_map.c enemy_algorithm_helper.c enemy_pathfinding_utils.c enemy_random_move.c load_imgs.c add_enemies.c
 OBJECTS=$(FILES:.c=.o)
 
 LIBFT=libft/

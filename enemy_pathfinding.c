@@ -54,25 +54,22 @@ int	found_player(t_path **m_cst, t_mlxs *v, t_cords c, int *mod)
 	}
 	return (0);
 }
-void	print_map(char **map, t_path **map_costs)
-{
-	int	i;
-	int	j;
 
-	i = 0;
-	while (map[i])
+int	do_enemy_pathfinding(t_mlxs *v, t_path **mp_cst, t_cords *cords, int *mod)
+{
+	cords->i += mod[0];
+	cords->j += mod[1];
+	if (v->map[cords->i][cords->j])
 	{
-		j = 0;
-		while (map[i][j])
-		{
-			ft_printf("%d+%d=%d %d| ", map_costs[i][j].gcost, map_costs[i][j].hcost, map_costs[i][j].gcost + map_costs[i][j].hcost, map_costs[i][j].passed);
-			j++;
-		}
-		ft_printf("<\n");
-		i++;
+		path_to_player(mp_cst, v->map, *cords, mod);
+		if (found_player(mp_cst, v, *cords, mod))
+			return (1);
 	}
-	ft_printf("\n");
+	cords->i -= mod[0];
+	cords->j -= mod[1];
+	return (0);
 }
+
 void	enemy_pathfinding(t_mlxs *vars, char **map, int x, int y)
 {
 	t_cords	cords;
@@ -81,6 +78,8 @@ void	enemy_pathfinding(t_mlxs *vars, char **map, int x, int y)
 	t_path	**map_costs;
 
 	map_costs = init_map_cost(map, vars);
+	if (map_costs == NULL)
+		return ;
 	cords.i = y;
 	cords.j = x;
 	cords.x = x;
@@ -88,16 +87,9 @@ void	enemy_pathfinding(t_mlxs *vars, char **map, int x, int y)
 	n = 0;
 	while (1)
 	{
-		while (get_mod_cords(&n, mod, &cords))
-		{
-			if (map[cords.i][cords.j])
-			{
-				path_to_player(map_costs, map, cords, mod);
-				if (found_player(map_costs, vars, cords, mod))
-					return ;
-			}
-		}
-		print_map(map, map_costs);
+		while (get_mod_cords(&n, mod))
+			if (do_enemy_pathfinding(vars, map_costs, &cords, mod))
+				return ;
 		if (!get_lowest_cost(vars->map, map_costs, &cords.j, &cords.i))
 			break ;
 	}

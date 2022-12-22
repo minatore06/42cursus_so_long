@@ -48,37 +48,49 @@ int	key_press_up(int keycode, t_mlxs *vars)
 	return (0);
 }
 
-static void	ft_destroy_images(t_mlxs *vars)
+void	ft_destroy_img(void *mlx, void *img)
+{
+	if (img)
+		mlx_destroy_image(mlx, img);
+}
+
+void	ft_destroy_images(t_mlxs *vars)
 {
 	int	i;
 
-	mlx_destroy_image(vars->mlx, vars->terrain.img);
-	mlx_destroy_image(vars->mlx, vars->border.img);
-	mlx_destroy_image(vars->mlx, vars->wall.img);
-	mlx_destroy_image(vars->mlx, vars->collectible.img);
-	mlx_destroy_image(vars->mlx, vars->exit_close.img);
-	mlx_destroy_image(vars->mlx, vars->exit_open.img);
-	mlx_destroy_image(vars->mlx, vars->dead.img);
+	ft_destroy_img(vars->mlx, vars->terrain.img);
+	ft_destroy_img(vars->mlx, vars->border.img);
+	ft_destroy_img(vars->mlx, vars->wall.img);
+	ft_destroy_img(vars->mlx, vars->collectible.img);
+	ft_destroy_img(vars->mlx, vars->exit_close.img);
+	ft_destroy_img(vars->mlx, vars->exit_open.img);
+	ft_destroy_img(vars->mlx, vars->dead.img);
 	i = 0;
 	while (i < 3)
-		mlx_destroy_image(vars->mlx, vars->victory[i++].img);
+		ft_destroy_img(vars->mlx, vars->victory[i++].img);
 	i = 0;
 	while (i < 8)
-		mlx_destroy_image(vars->mlx, vars->mc.img[i++].img);
+		ft_destroy_img(vars->mlx, vars->mc.img[i++].img);
 	i = 0;
 	while (i < 8)
-		mlx_destroy_image(vars->mlx, vars->enemy.img[i++].img);
+		ft_destroy_img(vars->mlx, vars->enemy.img[i++].img);
 	i = 0;
 	while (i < 4)
-		mlx_destroy_image(vars->mlx, vars->patrol.img[i++].img);
+		ft_destroy_img(vars->mlx, vars->patrol.img[i++].img);
 }
 
 int	ft_close(t_mlxs *vars)
 {
+	ft_printf("woa");
 	ft_destroy_images(vars);
-	mlx_destroy_window(vars->mlx, vars->win);
-	mlx_destroy_display(vars->mlx);
-	free(vars->mlx);
-	free_map((void **)vars->map);
+	if (vars->mlx)
+	{
+		if (vars->win)
+			mlx_destroy_window(vars->mlx, vars->win);
+		mlx_destroy_display(vars->mlx);
+		free(vars->mlx);
+	}
+	if (vars->map)
+		free_map((void **)vars->map);
 	exit(0);
 }

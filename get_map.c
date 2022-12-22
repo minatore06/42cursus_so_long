@@ -75,6 +75,17 @@ char	**dup_map(char **map)
 	return (dup);
 }
 
+void	*free_unfinished_map(void **map, int i)
+{
+	while (i >= 0)
+	{
+		free(map[i]);
+		i--;
+	}
+	free(map);
+	return (NULL);
+}
+
 void	free_map(void **map)
 {
 	int	i;
