@@ -81,7 +81,6 @@ void	ft_destroy_images(t_mlxs *vars)
 
 int	ft_close(t_mlxs *vars)
 {
-	ft_printf("woa");
 	ft_destroy_images(vars);
 	if (vars->mlx)
 	{
