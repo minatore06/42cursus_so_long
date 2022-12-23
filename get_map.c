@@ -38,9 +38,11 @@ char	**get_map(char *map_file, t_mlxs *vars)
 	char	*map_ln;
 	char	**map;
 
+	fd = open(map_file, O_RDONLY);
+	if (fd <= 0)
+		exit(0);
 	map = malloc(sizeof(char *) * get_map_lenght(map_file));
 	i = 0;
-	fd = open(map_file, O_RDONLY);
 	while (!i || map_ln)
 	{
 		map_ln = get_next_line(fd);

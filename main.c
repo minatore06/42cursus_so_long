@@ -64,6 +64,8 @@ int	main(int argc, char *argv[])
 
 	if (argc != 2)
 		return (0);
+	if (!ft_strnstr(argv[1], ".ber", ft_strlen(argv[1]) + 1))
+		return (0);
 	vars.map = get_map(argv[1], &vars);
 	get_error(map_check(vars.map, "01CEP", &vars), vars.map);
 	init_vars(&vars);

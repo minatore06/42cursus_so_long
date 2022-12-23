@@ -1,5 +1,5 @@
 CC=gcc
-FLAGS=-Wall -Wextra -Werror -g -O0
+FLAGS=-Wall -Wextra -Werror
 NAME=solonglib.a
 OUT=game.out
 
@@ -17,7 +17,7 @@ all: $(NAME)
 $(NAME): $(OBJECTS)
 	$(MAKE) -C $(LIBFT)
 	mv $(LIBFT)$(LIBFTNAME) $(NAME)
-	$(CC) $(FLAGS) $(OBJECTS) $(NAME) -no-pie -Lmlx_linux -lmlx_Linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz -o $(OUT) -g
+	$(CC) $(FLAGS) $(OBJECTS) $(NAME) -Lmlx_linux -lmlx_Linux -L/usr/lib -Imlx_linux -lXext -lX11 -lm -lz -o $(OUT)
 
 clean:
 	rm -f $(OBJECTS) $(BONUS_OBJECTS)
