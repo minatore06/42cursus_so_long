@@ -1,7 +1,7 @@
 CC=gcc
 FLAGS=-Wall -Wextra -Werror
 NAME=solonglib.a
-OUT=game.out
+OUT=so_long.out
 
 FILES=main.c hooks.c render.c ft_pathfinding.c enemy_pathfinding.c events_utils.c get_map_info.c get_map.c load_map.c movement_manager.c check_map.c enemy_algorithm_helper.c enemy_pathfinding_utils.c enemy_random_move.c load_imgs.c add_enemies.c
 OBJECTS=$(FILES:.c=.o)
